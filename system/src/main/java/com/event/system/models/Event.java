@@ -1,13 +1,10 @@
 package com.event.system.models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-@Getter
 @Entity
 @Table(name = "events")
 public class Event {
@@ -15,20 +12,21 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column(nullable = false, name = "name")
     private String name;
 
-    @Setter
     @Column(nullable = false, name = "date")
     private LocalDate date;
 
-    @Setter
     @Column(nullable = false, name = "local")
     private String local;
 
-    @OneToMany
-    @Column(nullable = false, name = "participants" )
+    @ManyToMany
+    @JoinTable(
+            name = "event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
+    )
     private Set<Participant> participants;
 
     public Event(String name, LocalDate date, String local) {
@@ -38,5 +36,41 @@ public class Event {
     }
 
     public Event() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getLocal() {
+        return local;
+    }
+
+    public void setLocal(String local) {
+        this.local = local;
+    }
+
+    public Set<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Set<Participant> participants) {
+        this.participants = participants;
     }
 }

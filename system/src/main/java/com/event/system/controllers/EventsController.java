@@ -3,13 +3,10 @@ package com.event.system.controllers;
 import com.event.system.dtos.request.EventRequestDto;
 import com.event.system.dtos.response.EventResponseDto;
 import com.event.system.dtos.response.ParticipantResponseDto;
-import com.event.system.models.Event;
-import com.event.system.models.Participant;
 import com.event.system.services.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +14,11 @@ import java.util.Set;
 @RequestMapping("/events")
 public class EventsController {
 
-    private EventService eventService;
+    private final EventService eventService;
+
+    public EventsController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -31,10 +32,10 @@ public class EventsController {
         return eventService.listAllEventsForDate();
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/{eventName}")
     @ResponseStatus(HttpStatus.OK)
-    public EventResponseDto getEventByName(@PathVariable String name) {
-        return eventService.getEventByName(name);
+    public EventResponseDto getEventByName(@PathVariable String eventName) {
+        return eventService.getEventByName(eventName);
     }
 
     @GetMapping("/allParticipantsToEvent/{eventId}")
@@ -43,10 +44,22 @@ public class EventsController {
         return eventService.getAllParticipantsToEvent(eventId);
     }
 
-    @PutMapping("/update/{id}")
+    @GetMapping("/report/moreThanParticipants/{numberOfParticipants}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventResponseDto> getEventsWithAtLeastXParticipants(@PathVariable int numberOfParticipants) {
+        return eventService.getEventsWithAtLeastXParticipants(numberOfParticipants);
+    }
+
+    @GetMapping("/report/listParticipantsByAge/{eventId}")
+    @ResponseStatus(HttpStatus.OK)
+    public EventResponseDto listParticipantsByAge(@PathVariable Long eventId) {
+        return eventService.listParticipantsByAge(eventId);
+    }
+
+    @PutMapping("/update/{eventId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public EventResponseDto updateEvent(@PathVariable Long id, @RequestBody EventRequestDto eventRequestDto) {
-        return eventService.updateEvent(id, eventRequestDto);
+    public EventResponseDto updateEvent(@PathVariable Long eventId, @RequestBody EventRequestDto eventRequestDto) {
+        return eventService.updateEvent(eventId, eventRequestDto);
     }
 
     @PutMapping("/addParticipant/{idParticipant}/{eventName}")
@@ -61,5 +74,10 @@ public class EventsController {
         eventService.removeParticipantFromEvent(idParticipant, eventName);
     }
 
+    @DeleteMapping("/deleteEvent/{eventId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEvent(@PathVariable Long eventId) {
+        eventService.deleteEvent(eventId);
+    }
 
 }

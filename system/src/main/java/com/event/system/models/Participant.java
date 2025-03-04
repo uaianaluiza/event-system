@@ -1,11 +1,9 @@
 package com.event.system.models;
 
 import jakarta.persistence.*;
-import lombok.Getter;
 
-@Getter
 @Entity
-@Table(name = "events")
+@Table(name = "participants")
 public class Participant{
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +16,37 @@ public class Participant{
         private int age;
 
         public Participant(String name, String email, int age) {
+                this.name = name;
+                this.email = email;
+                this.age = age;
         }
 
         public Participant() {
+        }
+
+        public Long getId() {
+                return id;
+        }
+
+        public String getName() {
+                return name;
+        }
+
+        public String getEmail() {
+                return email;
+        }
+
+        public int getAge() {
+                return age;
+        }
+
+        @Override
+        public String toString() {
+                return "Participant{" +
+                        "id=" + id +
+                        ", name='" + name + '\'' +
+                        ", email='" + email + '\'' +
+                        ", age=" + age +
+                        '}';
         }
 }
