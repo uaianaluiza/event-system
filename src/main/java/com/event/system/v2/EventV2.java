@@ -3,6 +3,8 @@ package com.event.system.v2;
 import com.event.system.v2.address.Address;
 import com.event.system.models.Participant;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -14,6 +16,8 @@ public class EventV2 {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(min = 2, max = 100, message = "O nome deve ter entre 2 e 100 caracteres")
     @Column(nullable = false, name = "name")
     private String name;
 

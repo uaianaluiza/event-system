@@ -1,5 +1,6 @@
 package com.event.system.v2.address;
 
+import com.event.system.v2.exceptions.CepNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +13,10 @@ public class AddressService {
     }
 
     public Address getAddress(String cep) {
-        return addressClient.getAddress(cep);
+        try {
+            return addressClient.getAddress(cep);
+        } catch (CepNotFoundException e) {
+            throw new CepNotFoundException("Cep not found");
+        }
     }
 }

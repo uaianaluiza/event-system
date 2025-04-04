@@ -36,6 +36,12 @@ public class EventsControllerV2 {
         return eventService.getEventByName(eventName);
     }
 
+    @GetMapping("/id/{eventId}")
+    @ResponseStatus(HttpStatus.OK)
+    public EventResponseDtoV2 getEventById(@PathVariable Long eventId) {
+        return eventService.getEventById(eventId);
+    }
+
     @GetMapping("/allParticipantsToEvent/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public Set<ParticipantResponseDto> getParticipantsToEvent(@PathVariable Long eventId) {

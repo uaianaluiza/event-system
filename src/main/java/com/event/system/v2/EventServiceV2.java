@@ -6,6 +6,8 @@ import com.event.system.v2.address.Address;
 import com.event.system.models.Participant;
 import com.event.system.v2.address.AddressService;
 import com.event.system.services.ParticipantService;
+import com.event.system.v2.exceptions.EventNotFoundException;
+import com.event.system.v2.exceptions.ParticipantNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -44,12 +46,21 @@ public class EventServiceV2 {
         return eventMapper.toEventResponse(eventV2);
     }
 
+    public EventResponseDtoV2 getEventById(Long eventId){
+        try {
+            EventV2 event = eventV2Repository.getById(eventId);
+            return eventMapper.toEventResponse(event);
+        }catch (RuntimeException e){
+            throw new EventNotFoundException(e.getMessage());
+        }
+    }
+
     public void addParticipantToEvent(Long id, String name) {
         EventV2 event = eventV2Repository.getByName(name);
         Participant participant = participantService.getParticipant(id);
 
         if (event.getParticipants().contains(participant)) {
-            System.out.printf("Participant " + name + " is already in this event\n");
+            throw new ParticipantNotFoundException("Participant " + name + " is already in this event\n");
         } else {
             event.getParticipants().add(participant);
             eventV2Repository.save(event);
@@ -64,9 +75,8 @@ public class EventServiceV2 {
         if (event.getParticipants().contains(participant)) {
             event.getParticipants().remove(participant);
             eventV2Repository.save(event);
-            System.out.printf("Participant " + participant.getName() + " removed with success \n");
         } else {
-            System.out.printf("Participant with id " + participant.getId() + " is not in this event\n");
+            throw new ParticipantNotFoundException("Participant with id " + participant.getId() + " is not in this event\n");
         }
     }
 
@@ -88,13 +98,17 @@ public class EventServiceV2 {
         EventV2 event = eventV2Repository.getById(eventId);
         EventResponseDtoV2 eventResponseDto = eventMapper.toEventResponse(event);
         if (event.getParticipants() == null || event.getParticipants().isEmpty()) {
-            System.out.println("Event don't have any participants");
+            throw new ParticipantNotFoundException("Event don't have any participants");
         }
         return eventResponseDto.getParticipants();
     }
 
     public List<EventResponseDtoV2> listAllEventsForDate() {
         List<EventV2> events = eventV2Repository.findAll();
+
+        if (events.isEmpty()){
+            throw new EventNotFoundException("Don't have any events");
+        }
 
         List<EventV2> sortedEvents = events.stream()
                 .sorted(Comparator.comparing(EventV2::getDate))
