@@ -1,6 +1,8 @@
 ## Descrição do Sistema
 O sistema é responsável por gerenciar eventos e seus participantes.
 
+Para uma melhor visualização e interação com este backend, um frontend foi desenvolvido utilizando HTML, CSS e JavaScript. Você pode encontrá-lo no seguinte repositório: [Event Frontend](https://github.com/uaianaluiza/front-event)
+
 ## Funcionalidades da API - Endpoints
 ### Gerenciar Eventos:
 
